@@ -1,0 +1,46 @@
+
+--Check the luadeploy has set our variables correctly
+assert(sqlfilename, "launcher file corrupt")
+assert(softwarename, "launcher file corrupt")
+
+local luadeploy
+do
+	local ok, rv = pcall(require, "luadeploy")
+	if not ok then 
+		print("Unable to find luadeploy module")
+		return
+	end
+	luadeploy = rv
+end
+
+local sql
+do
+	local fileh = io.open(sqlfilename)
+	sql = fileh:read("*a")
+	fileh:close()
+end
+
+local appdb = luadeploy.openSQLString(sql)
+
+local sodir = luadeploy.tmpsodir("/home/kev82/.luadeploy/{pid}")
+appdb:writeSharedObjs(softwarename, sodir)
+
+local dbserver = luadeploy.startServer("application", softwarename,
+ appdb, sodir)
+
+local modules = {
+ "base",
+ "package",
+ "ldclient",
+}
+
+local state = luadeploy.newState(modules)
+
+state:runCode([[
+for k=2,#package.searchers do package.searchers[k] = nil end
+package.searchers[#package.searchers+1] = function(x)
+	return ldclient.search("application", "module", x)
+end
+]])
+
+state:runSearch("application", "cmd", table.concat(arg, " "))
