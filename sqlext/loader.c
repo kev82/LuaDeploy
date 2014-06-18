@@ -88,14 +88,15 @@ static void loader_regmatch(
 	assert(argc == 2);
 
 	regex_t r;
-	int rc = regcomp(&r, sqlite3_value_text(argv[0]), REG_EXTENDED);
+	int rc = regcomp(&r, (const char *)sqlite3_value_text(argv[0]),
+	 REG_EXTENDED);
 	if(rc != 0) {
 		sqlite3_result_error(ctx, "Unable to compile regex", -1);
 		return;
 	}
 
 	regmatch_t matches[20];
-	rc = regexec(&r, sqlite3_value_text(argv[1]),
+	rc = regexec(&r, (const char *)sqlite3_value_text(argv[1]),
 	 20, matches, 0);
 	regfree(&r);
 
@@ -114,7 +115,7 @@ static void loader_regmatch(
 		return;
 	}
 
-	const char *src = sqlite3_value_text(argv[1]);
+	const char *src = (const char *)sqlite3_value_text(argv[1]);
 
 	size_t bytes;
 	char *buffer;
@@ -148,8 +149,8 @@ static void loader_getobj(
 	assert(argc == 2);
 
 	sqlite3 *db = sqlite3_context_db_handle(ctx);
-	const char *swname = sqlite3_value_text(argv[0]);
-	const char *objref = sqlite3_value_text(argv[1]);
+	const char *swname = (const char *)sqlite3_value_text(argv[0]);
+	const char *objref = (const char *)sqlite3_value_text(argv[1]);
 
 	char *query = sqlite3_mprintf(
 	 "select obj from \"%s_obj\" where objref=?", swname);
@@ -193,9 +194,9 @@ static void loader_search(
 	assert(argc == 3);
 
 	sqlite3 *db = sqlite3_context_db_handle(ctx);
-	const char *swname = sqlite3_value_text(argv[0]);
-	const char *exptype = sqlite3_value_text(argv[1]);
-	const char *request = sqlite3_value_text(argv[2]);
+	const char *swname = (const char *)sqlite3_value_text(argv[0]);
+	const char *exptype = (const char *)sqlite3_value_text(argv[1]);
+	const char *request = (const char *)sqlite3_value_text(argv[2]);
 
 	char *query = sqlite3_mprintf(
 	 "select loader, objref, entrypoint,"
@@ -262,8 +263,8 @@ static void loader_objrefs(
 	assert(argc == 2);
 
 	sqlite3 *db = sqlite3_context_db_handle(ctx);
-	const char *swname = sqlite3_value_text(argv[0]);
-	const char *loader = sqlite3_value_text(argv[1]);
+	const char *swname = (const char *)sqlite3_value_text(argv[0]);
+	const char *loader = (const char *)sqlite3_value_text(argv[1]);
 
 	char *query = sqlite3_mprintf(
 	 "select objref from \"%s_obj\" where loader=?", swname);

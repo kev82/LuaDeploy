@@ -56,7 +56,9 @@ static int ldresponse_error(lua_State *l) {
 	return lua_error(l);
 }
 
+/*
 //Don't remove, useful for debugging
+//Commented out to disable unused function warning
 static int ldresponse_dumpstate(lua_State *l) {
 	lua_settop(l, 1);
 	lua_State *s = (lua_State *)lua_touserdata(l, 1);
@@ -76,6 +78,7 @@ static int ldresponse_dumpstate(lua_State *l) {
 
 	return luaL_error(l, "Not implemented");
 }
+*/
 
 static int ldresponse_loadlua(lua_State *l) {
 	lua_settop(l, 1);
@@ -281,7 +284,8 @@ static void ldserver_handleRequest(struct ldserver_threaddata *td,
 	assert(sqlite3_column_type(stmt, 0) == SQLITE_TEXT);
 
 	lua_State *responseState = luaL_newstate();
-	rc = luaL_loadbufferx(responseState, sqlite3_column_text(stmt, 0),
+	rc = luaL_loadbufferx(responseState,
+	 (const char *)sqlite3_column_text(stmt, 0),
 	 sqlite3_column_bytes(stmt, 0), "searchdef", "t");
 	assert(rc == LUA_OK);
 	sqlite3_finalize(stmt);

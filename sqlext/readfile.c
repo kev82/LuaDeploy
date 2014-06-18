@@ -96,7 +96,7 @@ static void readfile_plain(
 	assert(argc == 1);
 
 	struct mappedfile mf;
-	openmappedfile(&mf, sqlite3_value_text(argv[0]));
+	openmappedfile(&mf, (const char *)sqlite3_value_text(argv[0]));
 
 	if(mf.contents == NULL) {
 		sqlite3_result_error(ctx, "unable to open file", -1);
@@ -114,7 +114,7 @@ static void readfile_sha256(
 	assert(argc == 1);
 
 	struct mappedfile mf;
-	openmappedfile(&mf, sqlite3_value_text(argv[0]));
+	openmappedfile(&mf, (const char *)sqlite3_value_text(argv[0]));
 
 	if(mf.contents == NULL) {
 		sqlite3_result_error(ctx, "unable to open file", -1);
@@ -156,7 +156,7 @@ static void readfile_compilelua(
 	assert(argc == 1);
 
 	struct mappedfile mf;
-	openmappedfile(&mf, sqlite3_value_text(argv[0]));
+	openmappedfile(&mf, (const char *)sqlite3_value_text(argv[0]));
 
 	if(mf.contents == NULL) {
 		sqlite3_result_error(ctx, "unable to open file", -1);
@@ -166,7 +166,7 @@ static void readfile_compilelua(
 	lua_State *l = luaL_newstate();
 	
 	if(luaL_loadbufferx(l, mf.contents, mf.bytes,
-	 sqlite3_value_text(argv[0]), "t") != LUA_OK) {
+	 (const char *)sqlite3_value_text(argv[0]), "t") != LUA_OK) {
 		sqlite3_result_error(ctx, lua_tostring(l, -1), -1);
 		lua_close(l);
 		return;
@@ -192,7 +192,7 @@ static void readfile_exportstext(
 	assert(argc == 1);
 
 	struct mappedfile mf;
-	openmappedfile(&mf, sqlite3_value_text(argv[0]));
+	openmappedfile(&mf, (const char *)sqlite3_value_text(argv[0]));
 
 	if(mf.contents == NULL) {
 		sqlite3_result_error(ctx, "unable to open file", -1);
@@ -264,7 +264,8 @@ static void readfile_exportsso(
  sqlite3_value **argv) {
 	assert(argc == 1);
 
-	void *lib = dlopen(sqlite3_value_text(argv[0]), RTLD_LAZY | RTLD_LOCAL);
+	void *lib = dlopen((const char *)sqlite3_value_text(argv[0]),
+	 RTLD_LAZY | RTLD_LOCAL);
 	if(lib == NULL) {
 		sqlite3_result_null(ctx);
 		return;

@@ -35,7 +35,7 @@ static void exports_countexports(
 	
 	struct expcursor ec;
 
-	expcursor_init(&ec, sqlite3_value_text(argv[0]), -1);
+	expcursor_init(&ec, (const char *)sqlite3_value_text(argv[0]), -1);
 
 	int ne = 0;
 	while(!expcursor_finished(&ec)) {

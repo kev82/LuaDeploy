@@ -171,7 +171,8 @@ static int exptbl_next(
 				return SQLITE_MISUSE;
 			}
 
-			expcursor_init(&c->ec, sqlite3_column_text(c->stmt, 1), -1);
+			expcursor_init(&c->ec,
+			 (const char *)sqlite3_column_text(c->stmt, 1), -1);
 		}
 	}
 
@@ -207,7 +208,7 @@ static int exptbl_column(
 		sqlite3_result_text(ctx, buffer, -1, SQLITE_TRANSIENT);
 */
 		sqlite3_result_null(ctx);
-		return;
+		return SQLITE_OK;
 	}
 
 	switch(cidx) {
@@ -307,7 +308,7 @@ static int exptbl_cmdparser(
 	return SQLITE_OK;
 }
 
-static exptbl_connect(
+static int exptbl_connect(
  sqlite3 *db,
  void *udp,
  int argc,
@@ -359,6 +360,8 @@ static int exptbl_disconnect(
 
 	v->db = NULL;
 	free((void *)v->query);
+
+	return SQLITE_OK;
 }
 
 static sqlite3_module exptbl_module = {
