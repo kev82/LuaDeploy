@@ -142,8 +142,8 @@ static void deploy_softwaresql2(
  sqlite3_value **argv) {
 	assert(argc == 2);	//thisname, targetname
 
-	const char *src = sqlite3_value_text(argv[0]);
-	const char *dest = sqlite3_value_text(argv[1]);
+	const char *src = (const char *)sqlite3_value_text(argv[0]);
+	const char *dest = (const char *)sqlite3_value_text(argv[1]);
 
 	char *result;
 	size_t bytes;
@@ -179,9 +179,9 @@ static void deploy_softwaresql3(
  sqlite3_value **argv) {
 	assert(argc == 3);	//thisname, targetname, sqlfile
 
-	const char *src = sqlite3_value_text(argv[0]);
-	const char *dest = sqlite3_value_text(argv[1]);
-	const char *sqlfname = sqlite3_value_text(argv[2]);
+	const char *src = (const char *)sqlite3_value_text(argv[0]);
+	const char *dest = (const char *)sqlite3_value_text(argv[1]);
+	const char *sqlfname = (const char *)sqlite3_value_text(argv[2]);
 
 	FILE *stream = fopen(sqlfname, "w");
 	if(stream == NULL) {
@@ -216,8 +216,8 @@ static void deploy_writeso(
  sqlite3_value **argv) {
 	assert(argc == 2);	//software, dir
 
-	const char *software = sqlite3_value_text(argv[0]);
-	const char *dir = sqlite3_value_text(argv[1]);
+	const char *software = (const char *)sqlite3_value_text(argv[0]);
+	const char *dir = (const char *)sqlite3_value_text(argv[1]);
 
 	char *sql = sqlite3_mprintf(
 	 "select objref, obj from \"%s_obj\" where loader='so'", software);

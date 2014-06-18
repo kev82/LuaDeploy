@@ -203,7 +203,7 @@ static int lddb_createFromSQLString(lua_State *l) {
 		while(rc2 != SQLITE_DONE) {
 			if(rc2 != SQLITE_ROW) {
 				lua_pushstring(l, "Problem with ");
-				lua_pushstring(l, sqlite3_column_text(stmt, 0));
+				lua_pushstring(l, (const char *)sqlite3_column_text(stmt, 0));
 				lua_pushstring(l, " manifest");
 				lua_concat(l, 3);
 
@@ -257,7 +257,7 @@ static int lddb_createFromDBFile(lua_State *l) {
 		while(rc2 != SQLITE_DONE) {
 			if(rc2 != SQLITE_ROW) {
 				lua_pushstring(l, "Problem with ");
-				lua_pushstring(l, sqlite3_column_text(stmt, 0));
+				lua_pushstring(l, (const char *)sqlite3_column_text(stmt, 0));
 				lua_pushstring(l, " manifest");
 				lua_concat(l, 3);
 

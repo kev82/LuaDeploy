@@ -17,7 +17,7 @@ amalg) cat dircursor.c exports_cursor.c
 	;;
 
 buildext) $0 amalg | \
- gcc -fPIC -shared -O2 -o "$sqlextension" -x c - \
+ gcc -Wall -fPIC -shared -O2 -o "$sqlextension" -x c - \
  -I/usr/include/lua5.2 \
  -llua5.2 -lcrypto
 	;;
@@ -27,7 +27,7 @@ buildfpica)
 		echo "fpica.o already exists!"
 		exit 1
 	fi
-	$0 amalg | gcc -fPIC -O2 -DSQLITE_CORE -x c -c -o fpica.o - \
+	$0 amalg | gcc -Wall -fPIC -O2 -DSQLITE_CORE -x c -c -o fpica.o - \
 	 -I/usr/include/lua5.2
 	ar rcs "$libarchive" fpica.o
 	rm -f fpica.o
